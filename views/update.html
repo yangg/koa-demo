@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+<form action="/post/update/{{post._id}}" method="POST">
+  <p><input name="title" type=text value="{{post.title}}"/></p>
+  <p><textarea name='body'>{{post.body}}</textarea></p>
+  <button type="submit">Submit</button>
+</form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+{% block content %}
+<dl>
+  <dt>{{post.title}}</dt>
+  <dd>{{post.body | escape | nl2br }}</dd>
+  <dd>{{post.updated_at | date}}</dd>
+  <dd><a href="/post/update/{{post._id}}">Edit</a>
+</dl>
+{% endblock %}

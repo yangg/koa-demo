@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+<a href='/post/update'>New Post</a>
+<h1>Posts</h1>
+{# <pre>{{posts | dump }}</pre> #}
+<div id="posts">
+  {% for post in posts %}
+  <dl>
+    <dt><a href="/post/{{post._id}}">{{post.title}}</a></dt>
+    <dd>{{post.body}}</dd>
+    <dd>Last Updated @ {{post.updated_at | date}}</dd>
+    <dd><a href="/post/update/{{post._id}}">Edit</a></dd>
+  </dl>
+  {% endfor %}
+</div>
+<a href="/post/">Not found</a>
+{% endblock %}

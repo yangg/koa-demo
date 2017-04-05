@@ -1,0 +1,22 @@
+{
+  "name": "koa-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "co-body": "^5.1.1",
+    "co-views": "^2.1.0",
+    "koa": "^2.2.0",
+    "koa-logger": "^2.0.1",
+    "koa-nunjucks-2": "^3.0.0-alpha.5",
+    "koa-router": "^7.1.1",
+    "monk": "^4.0.0",
+    "nunjucks-date": "^1.2.0"
+  }
+}
