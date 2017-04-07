@@ -3,7 +3,7 @@ const Koa = require('koa')
 const logger = require('koa-logger')
 const router = require('koa-router')()
 const render = require('./lib/render')
-const parse = require('co-body')
+const bodyParser = require('koa-bodyparser')
 
 const db = require('monk')('localhost/koa_blog')
 
@@ -17,6 +17,7 @@ app.use(async (ctx, next) => {
   }
 })
 app.use(render)
+app.use(bodyParser())
 
 app.use(async (ctx, next) => {
   try {
@@ -53,7 +54,7 @@ router.get('/post/update/:id?', async function (ctx) {
 })
 router.post('/post/update/:id?', async function (ctx) {
   const id = ctx.params.id
-  const post = await parse(ctx.req)
+  const post = ctx.request.body
   if (!id) {
     post.created_at = post.updated_at = new Date()
     await posts.insert(post)
