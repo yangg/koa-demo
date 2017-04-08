@@ -4,6 +4,7 @@ const logger = require('koa-logger')
 const router = require('koa-router')()
 const render = require('./lib/render')
 const bodyParser = require('koa-bodyparser')
+const session = require('koa-session')
 
 const db = require('monk')('localhost/koa_blog')
 
@@ -18,6 +19,20 @@ app.use(async (ctx, next) => {
 })
 app.use(render)
 app.use(bodyParser())
+app.use(session(app))
+app.use(async (ctx, next) => {
+  if (ctx.method !== 'GET') {
+    ctx.flash = msg => {
+      ctx.session.flashMessages = (ctx.session.flashMessages || []).concat(msg)
+    }
+  } else {
+    if (ctx.session.flashMessages) {
+      ctx.state.flashMessages = ctx.session.flashMessages
+      delete ctx.session.flashMessages
+    }
+  }
+  await next()
+})
 
 app.use(async (ctx, next) => {
   try {
@@ -45,6 +60,7 @@ app.use(async (ctx, next) => {
 
 router.get('/', async function (ctx) {
   const postList = await posts.find({}, {sort: { created_at: -1 }})
+  // console.log(ctx.session.flashMessages)
   await ctx.render('index', { posts: postList })
 })
 
@@ -64,6 +80,7 @@ router.post('/post/update/:id?', async function (ctx) {
     Object.assign(postInfo, post)
     await posts.update({ _id: id }, postInfo)
   }
+  ctx.flash({type: 'success', msg: `Post ${id ? 'updated' : 'created'} successfully!`})
   ctx.redirect('/')
 })
 router.get('/post/:id?', async function (ctx) {
@@ -75,6 +92,7 @@ router.get('/post/:id?', async function (ctx) {
 })
 router.delete('/post/:id', function (ctx) {
   posts.removeById(ctx.params.id)
+  ctx.flash({type: 'success', msg: 'Post delete successfully!'})
   ctx.body = { code: 0 }
 })
 
