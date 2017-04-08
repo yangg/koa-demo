@@ -73,6 +73,10 @@ router.get('/post/:id?', async function (ctx) {
   }
   await ctx.render('post', { post })
 })
+router.delete('/post/:id', function (ctx) {
+  posts.removeById(ctx.params.id)
+  ctx.body = { code: 0 }
+})
 
 app.use(router.routes())
 
