@@ -38,7 +38,7 @@ app.use(async (ctx, next) => {
   try {
     await next()
     if (ctx.status === 404) {
-      ctx.throw('Page not found', 404)
+      ctx.throw(404, 'Page not found')
     }
   } catch (err) {
     let message = err.stack || err.message
@@ -86,14 +86,26 @@ router.post('/post/update/:id?', async function (ctx) {
 router.get('/post/:id?', async function (ctx) {
   const post = await posts.findOne({ _id: ctx.params.id })
   if (!post) {
-    ctx.throw('Post not found', 404)
+    ctx.throw(404, 'Post not found')
   }
   await ctx.render('post', { post })
 })
 router.delete('/post/:id', function (ctx) {
-  posts.removeById(ctx.params.id)
+  posts.remove({_id: ctx.params.id})
   ctx.flash({type: 'success', msg: 'Post delete successfully!'})
   ctx.body = { code: 0 }
+})
+
+router.get('/form', async function (ctx) {
+  await ctx.render('form')
+})
+router.post('/form', function (ctx) {
+  console.log(ctx.request.body)
+  if (ctx.is('multipart/*')) {
+    ctx.body = ['xx']
+  } else {
+    ctx.body = ctx.request.body
+  }
 })
 
 app.use(router.routes())

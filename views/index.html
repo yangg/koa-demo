@@ -21,7 +21,8 @@ document.onclick = e => {
   if(target.matches('[data-delete]')) {
     e.preventDefault()
     fetch(target.href, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     }).then(r => r.json()).then(r => {
       if(r.code === 0) {
         location.reload()
