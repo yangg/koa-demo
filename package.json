@@ -17,7 +17,7 @@
     "koa-nunjucks-2": "^3.0.0-alpha.5",
     "koa-router": "^7.1.1",
     "koa-session": "^5.0.0",
-    "monk": "^4.0.0",
-    "nunjucks-date": "^1.2.0"
+    "nunjucks-date": "^1.2.0",
+    "pg-promise": "^5.6.4"
   }
 }

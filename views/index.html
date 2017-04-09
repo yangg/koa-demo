@@ -6,10 +6,10 @@
 <div id="posts">
   {% for post in posts %}
   <dl>
-    <dt><a href="/post/{{post._id}}">{{post.title}}</a></dt>
+    <dt><a href="/post/{{post.id}}">{{post.title}}</a></dt>
     <dd>{{post.body}}</dd>
     <dd>Last Updated @ {{post.updated_at | date}}</dd>
-    <dd><a href="/post/update/{{post._id}}">Edit</a> &nbsp; <a data-delete href="/post/{{post._id}}">Delete</a></dd>
+    <dd><a href="/post/update/{{post.id}}">Edit</a> &nbsp; <a data-delete href="/post/{{post.id}}">Delete</a></dd>
   </dl>
   {% endfor %}
 </div>
@@ -21,7 +21,8 @@ document.onclick = e => {
   if(target.matches('[data-delete]')) {
     e.preventDefault()
     fetch(target.href, {
-      method: 'DELETE'
+      method: 'DELETE',
+      credentials: 'include'
     }).then(r => r.json()).then(r => {
       if(r.code === 0) {
         location.reload()
