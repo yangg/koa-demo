@@ -5,8 +5,7 @@ const router = require('koa-router')()
 const render = require('./lib/render')
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
-const model = require('./lib/post')
-// const model1 = require('./lib/post1')
+const Post = require('./lib/post')
 
 const app = new Koa()
 app.keys = [ 'secret key' ]
@@ -58,37 +57,42 @@ app.use(async (ctx, next) => {
 })
 
 router.get('/', async function (ctx) {
-  const postList = await model.find()
+  const postList = await Post.findAll({
+    order: 'id DESC'
+  })
   await ctx.render('index', { posts: postList })
 })
 
 router.get('/post/update/:id?', async function (ctx) {
-  const post = ctx.params.id ? await model.findOne(ctx.params.id) : {}
+  const post = ctx.params.id ? await Post.findById(ctx.params.id) : {}
   await ctx.render('update', { post })
 })
 router.post('/post/update/:id?', async function (ctx) {
   let id = ctx.params.id
   const post = ctx.request.body
   if (!id) {
-    post.created_at = post.updated_at = new Date().getTime() / 1000
-    id = await model.create(post)
+    id = await Post.upsert(post)
     console.log(id)
   } else {
-    post.updated_at = new Date().getTime() / 1000
-    await model.update(id, post)
+    post.id = id
+    await Post.upsert(post)
   }
   ctx.flash({type: 'success', msg: `Post ${id ? 'updated' : 'created'} successfully!`})
   ctx.redirect('/')
 })
 router.get('/post/:id?', async function (ctx) {
-  const post = await model.findOne(ctx.params.id)
+  const post = await Post.findById(ctx.params.id)
   if (!post) {
     ctx.throw(404, 'Post not found')
   }
   await ctx.render('post', { post })
 })
 router.delete('/post/:id', async function (ctx) {
-  await model.delete(ctx.params.id)
+  await Post.destroy({
+    where: {
+      id: ctx.params.id
+    }
+  })
   ctx.flash({type: 'success', msg: 'Post delete successfully!'})
   ctx.body = { code: 0 }
 })
