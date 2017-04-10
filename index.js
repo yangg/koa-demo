@@ -6,7 +6,6 @@ const render = require('./lib/render')
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session')
 const model = require('./lib/post')
-// const model1 = require('./lib/post1')
 
 const app = new Koa()
 app.keys = [ 'secret key' ]
@@ -70,11 +69,10 @@ router.post('/post/update/:id?', async function (ctx) {
   let id = ctx.params.id
   const post = ctx.request.body
   if (!id) {
-    post.created_at = post.updated_at = new Date().getTime() / 1000
+    post.created_at = post.updated_at = new Date()
     id = await model.create(post)
-    console.log(id)
   } else {
-    post.updated_at = new Date().getTime() / 1000
+    post.updated_at = new Date()
     await model.update(id, post)
   }
   ctx.flash({type: 'success', msg: `Post ${id ? 'updated' : 'created'} successfully!`})

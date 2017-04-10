@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e 'js html' index.js"
+    "start": "nodemon -e 'js html' index.js",
+    "migrate": "db-migrate --config config/database.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "co-views": "^2.1.0",
+    "db-migrate": "^0.10.0-beta.20",
+    "db-migrate-pg": "^0.1.11",
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
     "koa-logger": "^2.0.1",
