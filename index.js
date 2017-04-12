@@ -3,7 +3,7 @@ const Koa = require('koa')
 const logger = require('koa-logger')
 const router = require('koa-router')()
 const render = require('./lib/render')
-const bodyParser = require('koa-bodyparser')
+const getBody = require('koa-get-body')
 const session = require('koa-session')
 
 const db = require('monk')('localhost/koa_blog')
@@ -18,7 +18,7 @@ app.use(async (ctx, next) => {
   }
 })
 app.use(render)
-app.use(bodyParser())
+app.use(getBody({ limits: { fileSize: 1024 * 1024 } }))
 app.use(session(app))
 app.use(async (ctx, next) => {
   if (ctx.method !== 'GET') {
@@ -99,13 +99,9 @@ router.delete('/post/:id', function (ctx) {
 router.get('/form', async function (ctx) {
   await ctx.render('form')
 })
-router.post('/form', function (ctx) {
-  console.log(ctx.request.body)
-  if (ctx.is('multipart/*')) {
-    ctx.body = ['xx']
-  } else {
-    ctx.body = ctx.request.body
-  }
+router.post('/form', async function (ctx) {
+  const body = await ctx.request.getBody()
+  ctx.body = body
 })
 
 app.use(router.routes())
