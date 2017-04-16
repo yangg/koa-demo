@@ -4,6 +4,11 @@
   <p><input name="title" type=text value="{{post.title}}"/></p>
   <p><input name="file" type=file /></p>
   <p><textarea name='body'>{{post.body}}</textarea></p>
+  <p>
+    <label><input type="checkbox" name="hobby[]" value="睡觉" />睡觉</label>
+	  <label><input type="checkbox" name="hobby[]" value="吃饭" />吃饭</label>
+		<label><input type="checkbox" name="hobby[]" value="足球" />足球</label>
+  </p>
   <p><select name="type">
   <option value="0">FormData</option>
   <option value="1">JSON</option>
@@ -13,17 +18,25 @@
 </form>
 
 <script>
+function filterFormData(els, add) {
+  for(let i = 0; i < els.length; i++) {
+    let el = els[i]
+    let name = el.name
+    if((el.type === 'checkbox' || el.type === 'radio') && !el.checked || !name || el.disabled) {
+      continue
+    }
+    add(name, el.value)
+  }
+}
 function createBody(form) {
   const type = form.type.value
   if(type === '0') {
     return { body: new FormData(form) }
   }
   const els = form.elements
-  let body = {}
-  for(let i = 0; i < els.length; i++) {
-    body[els[i].name] = els[i].value
-  }
   if(type === '1') {
+    let body = {}
+    filterFormData(els, (name, val) => (body[name] = val))
     return {
       body: JSON.stringify(body),
       headers: {
@@ -31,20 +44,31 @@ function createBody(form) {
       }
     }
   }
+  const params = new URLSearchParams()
+  filterFormData(els, (name, val) => params.append(name, val))
   return {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: Object.keys(body).map((key) => key + '=' + encodeURIComponent(body[key])).join('&')
+    body: params.toString()
   }
+}
+function request(url, fetchOptions) {
+  const headers = Object.assign({
+    Accept: 'application/json'
+  }, fetchOptions.headers)
+  return fetch(url,
+    Object.assign({
+      method: 'post',
+    },
+    fetchOptions,  {
+      headers
+    })
+  ).then(r => r.json())
 }
 document.querySelector('form').onsubmit = function(e) {
   e.preventDefault()
-  fetch(this.action, Object.assign({
-      method: 'post',
-    },
-    createBody(this)
-  )).then(r => r.json()).then(j => {
+  request(this.action, createBody(this)).then(j => {
     console.log(j)
   })
 }

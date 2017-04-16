@@ -5,6 +5,7 @@ const router = require('koa-router')()
 const render = require('./lib/render')
 const getBody = require('koa-get-body')
 const session = require('koa-session')
+const onError = require('./lib/koa-onerror')
 
 const db = require('monk')('localhost/koa_blog')
 
@@ -33,24 +34,13 @@ app.use(async (ctx, next) => {
   }
   await next()
 })
-
-app.use(async (ctx, next) => {
-  try {
-    await next()
-    if (ctx.status === 404) {
-      ctx.throw(404, 'Page not found')
-    }
-  } catch (err) {
-    let message = err.stack || err.message
-    if (err.status !== 404) {
-      console.error(err)
-    } else {
-      message = err.message
-    }
-    ctx.status = err.status || 500
-    await ctx.render('error', { message, status: ctx.status })
-  }
+// app.on('error', function (ex) {
+//   console.error('app error', ex)
+// })
+process.on('uncaughtException', function (ex) {
+  console.error('uncaughtException', ex)
 })
+app.use(onError())
 app.use(async (ctx, next) => {
   const startTime = new Date()
   await next()
@@ -96,14 +86,18 @@ router.delete('/post/:id', function (ctx) {
   ctx.body = { code: 0 }
 })
 
+router.get('/error', async function (ctx) {
+  throw new Error('NewError')
+})
 router.get('/form', async function (ctx) {
   await ctx.render('form')
 })
 router.post('/form', async function (ctx) {
   const body = await ctx.request.getBody()
+  body.__contentType = ctx.request.type
   ctx.body = body
 })
 
 app.use(router.routes())
 
-app.listen(3000)
+app.listen(3009)
