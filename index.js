@@ -60,6 +60,23 @@ router.post('/form', async function (ctx) {
   ctx.body = body
 })
 
+router.get('/log', async function (ctx) {
+  const options = Object.assign({
+    // from: new Date() - 24 * 60 * 60 * 1000,
+    // until: new Date(),
+    // order: 'desc',
+    // start: 0
+    limit: 200,
+    // fields: ['level', 'message', 'timestamp', 'stack']
+  }, ctx.query)
+  await new Promise((resolve) => {
+    logger.query(options, (err, results) => {
+      ctx.body = results
+      resolve()
+    })
+  })
+})
+
 app.use(router.routes())
 
 app.listen(process.env.PORT || 3009)

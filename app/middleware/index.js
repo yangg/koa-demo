@@ -11,22 +11,15 @@ const flash = require('./koa-flash')
 module.exports = function (app) {
   fundebug.config({
     apikey: 'e388a44167bf9d7b81924cb1f15ada4afbe472cca1f495ae4604136f9fe92e50',
-    silent: app.env !== 'development',
+    silent: app.env !== 'production',
     releaseStage: app.env
   })
+  // uncaughtException is captured by default
   app.on('error', fundebug.KoaErrorHandler)
-  process.on('uncaughtException', function (ex) {
-    fundebug.notifyError(ex)
-  })
   app.use(onError())
 
   app.keys = [ 'secret key' ]  // # CONFIG
 
-  app.use(async (ctx, next) => {
-    if (!/\.map$/.test(ctx.path)) { // ignore .map
-      await next()
-    }
-  })
   app.use(logger())
 
   app.use(render)
