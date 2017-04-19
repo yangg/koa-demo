@@ -17,8 +17,10 @@ function onError () {
         // Print stack in non-production
         if (err.stack && err.status !== 404) {
           errObj.error = err.stack
-          console.error(err)
         }
+      }
+      if(err.status !== 404) {
+        logger.error(err)
       }
       ctx.status = err.status
       const acceptType = ctx.accepts('html', 'json')

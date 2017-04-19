@@ -21,7 +21,7 @@ router.get('/post/update/:id?', async function (ctx) {
 })
 router.post('/post/update/:id?', async function (ctx) {
   const id = ctx.params.id
-  const post = ctx.request.body
+  const post = await ctx.request.getBody()
   if (!id) {
     post.created_at = post.updated_at = new Date()
     await posts.insert(post)
@@ -30,6 +30,7 @@ router.post('/post/update/:id?', async function (ctx) {
     const postInfo = await posts.findOne({ _id: id })
     Object.assign(postInfo, post)
     await posts.update({ _id: id }, postInfo)
+    logger.info('Updated post %s', id)
   }
   ctx.flash({type: 'success', msg: `Post ${id ? 'updated' : 'created'} successfully!`})
   ctx.redirect('/')

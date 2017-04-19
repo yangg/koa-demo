@@ -2,7 +2,7 @@
 # koa-demo
 
 ## Features
-* add koa-logger
+* add koa-morgan & winston
 * render with [nunjucks](https://mozilla.github.io/nunjucks/) template
 * show flash message via koa-session
 * save data in mongo via monk
