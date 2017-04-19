@@ -5,7 +5,7 @@ const nunjucksDate = require('nunjucks-date')
 
 module.exports = koaNunjucks({
   ext: 'html',
-  path: path.join(__dirname, '../views/'),
+  path: path.join(__dirname, '../../views/'),
   nunjucksConfig: {
   },
   configureEnvironment: (env) => {
