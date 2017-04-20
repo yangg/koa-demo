@@ -27,7 +27,7 @@ module.exports = function () {
   return morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
     stream: {
       write: function (msg, encoding) {
-        logger.info(msg.replace(/\n$/, ''))
+        logger.info(msg.trim())
       }
     }
   })

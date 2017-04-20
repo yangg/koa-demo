@@ -11,7 +11,6 @@ require('./app/middleware')(app)
 
 router.get('/', async function (ctx) {
   const postList = await posts.find({}, {sort: { created_at: -1 }})
-  // console.log(ctx.session.flashMessages)
   await ctx.render('index', { posts: postList })
 })
 
@@ -66,7 +65,7 @@ router.get('/log', async function (ctx) {
     // until: new Date(),
     // order: 'desc',
     // start: 0
-    limit: 200,
+    limit: 200
     // fields: ['level', 'message', 'timestamp', 'stack']
   }, ctx.query)
   await new Promise((resolve) => {
@@ -79,4 +78,5 @@ router.get('/log', async function (ctx) {
 
 app.use(router.routes())
 
+logger.info('NODE_ENV:', app.env)
 app.listen(process.env.PORT || 3009)

@@ -2,6 +2,7 @@
 const fundebug = require('fundebug-nodejs')
 const onError = require('./koa-onerror')
 
+const ignore = require('./ignore')
 const logger = require('./logger')
 const render = require('./render')
 const getBody = require('koa-get-body')
@@ -20,6 +21,7 @@ module.exports = function (app) {
 
   app.keys = [ 'secret key' ]  // # CONFIG
 
+  app.use(ignore(/\.map$/)) // ignore .map
   app.use(logger())
 
   app.use(render)

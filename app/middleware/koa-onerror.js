@@ -19,7 +19,7 @@ function onError () {
           errObj.error = err.stack
         }
       }
-      if(err.status !== 404) {
+      if (err.status !== 404) {
         logger.error(err)
       }
       ctx.status = err.status

@@ -23,8 +23,6 @@
     "winston": "^2.3.1"
   },
   "standard": {
-    "globals": {
-      "logger": true
-    }
+    "globals": [ "logger" ]
   }
 }
