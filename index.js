@@ -7,7 +7,7 @@ const posts = db.get('posts')
 
 const app = new Koa()
 
-require('./app/middleware')(app)
+require('./app')(app)
 
 router.get('/', async function (ctx) {
   const postList = await posts.find({}, {sort: { created_at: -1 }})

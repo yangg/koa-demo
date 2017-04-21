@@ -1,32 +1,39 @@
 
 const logger = require('winston')
 const morgan = require('koa-morgan')
+const path = require('path')
 
-const logPath = __dirname + '/../logs/app.log'
+module.exports = function (options, app) {
+  options = Object.assing({
+    dir: path.join(__dirname, '/../logs'),
+    maxSize: 5 * 1024 * 2024
+  })
 
-logger.configure({
-  transports: [
-    new logger.transports.Console({
-      level: 'debug',
-      colorize: true,
-      handleExceptions: true
-    }),
-    new logger.transports.File({
-      level: 'info',
-      maxsize: 5 * 1024 * 2024,
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-      filename: logPath
-    })
-  ],
-  exitOnError: false
-})
-global.logger = logger
+  logger.configure({
+    transports: [
+      new logger.transports.Console({
+        level: 'debug',
+        colorize: true,
+        handleExceptions: true
+      }),
+      new logger.transports.File({
+        level: 'info',
+        maxsize: options.maxSize,
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        filename: path.join(options.dir, 'app.log')
+      })
+    ],
+    exitOnError: false
+  })
+  global.logger = logger
 
-module.exports = function () {
-  return morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', {
+  return morgan(app.isDev ? 'dev' : 'combined', {
     stream: {
       write: function (msg, encoding) {
+        if (app.isDev) {
+          msg = msg.replace(/\u001b\[\d+m/g, '') // strip color in terminal
+        }
         logger.info(msg.trim())
       }
     }
