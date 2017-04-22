@@ -78,5 +78,7 @@ router.get('/log', async function (ctx) {
 
 app.use(router.routes())
 
-logger.info('NODE_ENV:', app.env)
-app.listen(process.env.PORT || 3009)
+const server = app.listen(process.env.PORT || 3009, 'localhost', function () {
+  const addressInfo = server.address()
+  logger.info('%s(%s) listen on http://%s:%s started', app.config.name, app.env, addressInfo.address, addressInfo.port)
+})

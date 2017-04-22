@@ -4,15 +4,16 @@ const morgan = require('koa-morgan')
 const path = require('path')
 
 module.exports = function (options, app) {
-  options = Object.assing({
+  options = Object.assign({
     dir: path.join(__dirname, '/../logs'),
     maxSize: 5 * 1024 * 2024
   })
+  const isDebug = process.env.DEBUG
 
   logger.configure({
     transports: [
       new logger.transports.Console({
-        level: 'debug',
+        level: isDebug ? 'debug' : 'info',
         colorize: true,
         handleExceptions: true
       }),

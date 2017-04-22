@@ -1,9 +1,11 @@
 
-const fundebug = require('fundebug-nodejs')
-
 module.exports = (options, app) => {
+  // dont's use fundebug config silent, will cause uncaughtException silent
+  if (!app.isEnv) {
+    return
+  }
+  const fundebug = require('fundebug-nodejs')
   fundebug.config(Object.assign({
-    silent: app.env !== 'production',
     releaseStage: app.env
   }, options))
   // uncaughtException is captured by default
