@@ -2,30 +2,41 @@
 const path = require('path')
 
 const middlewareDir = path.join(__dirname, 'middleware')
+const pluginDir = path.join(__dirname, 'plugins')
 const dependencies = require('../package').dependencies
-const initMiddleware = (app) => {
-  app.config.middlewares.forEach(middleware => {
-    let name
-    let options = null
-    if (Array.isArray(middleware)) {
-      name = middleware[0]
-      options = middleware[1]
-    } else {
-      name = middleware
-    }
-    let modulePath = dependencies.hasOwnProperty(name) ? name : path.join(middlewareDir, name)
-    app.use(require(modulePath)(options, app))
-  })
-}
 
 module.exports = (app) => {
   const config = require('../config')
   app.config = config
   app.isDev = app.env === 'development'
   app.isProd = app.env === 'production'
-
   app.keys = app.config.keys
-  require('./helper/fundebug')(config.fundebug, app)
 
-  initMiddleware(app)
+  const extractPlugin = (name, pluginDir) => {
+    let pluginInfo = name
+    if (!Array.isArray(pluginInfo)) {
+      pluginInfo = [name]
+    }
+    if (!dependencies.hasOwnProperty(pluginInfo[0])) {
+      pluginInfo[0] = path.join(pluginDir, pluginInfo[0])
+    }
+    return pluginInfo
+  }
+
+  const initMiddleware = () => {
+    config.middleware.forEach(middleware => {
+      let [modulePath, options] = extractPlugin(middleware, middlewareDir)
+      app.use(require(modulePath)(options, app))
+    })
+  }
+
+  const initPlugins = () => {
+    config.plugins.forEach(plugin => {
+      let [modulePath, options] = extractPlugin(plugin, pluginDir)
+      require(modulePath)(options, app)
+    })
+  }
+
+  initPlugins()
+  initMiddleware()
 }
