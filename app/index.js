@@ -39,4 +39,6 @@ module.exports = (app) => {
 
   initPlugins()
   initMiddleware()
+
+  app.use(require('./routes').routes())
 }
