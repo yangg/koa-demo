@@ -5,10 +5,11 @@ module.exports = {
   name: appPackage.name,
   keys: [ 'secret key' ],
   middleware: [
-    'koa-onerror',
     ['ignore', /\.map$/],
+    'koa-onerror',
     'logger',
-    'koa-session',
+    // 'koa-session',
+    'session',
     'koa-flash',
     'render',
     ['koa-get-body', { limits: { fileSize: 1024 * 1024 } }]
