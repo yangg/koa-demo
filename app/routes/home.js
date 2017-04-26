@@ -1,7 +1,5 @@
 
-const home = require('../controllers/home')
-
-module.exports = (router) => {
+module.exports = (router, home) => {
   router.get('', home.index)
   router.get('form', home.getForm)
   router.post('form', home.postForm)

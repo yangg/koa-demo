@@ -8,7 +8,7 @@ module.exports = function () {
     } else {
       if (ctx.session.flashMessages) {
         ctx.state.flashMessages = ctx.session.flashMessages
-        delete ctx.session.flashMessages
+        ctx.session.flashMessages = null
       }
     }
     await next()
