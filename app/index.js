@@ -1,7 +1,7 @@
 
 const path = require('path')
 const fs = require('fs')
-const _ = require('lodash')
+const merge = require('lodash.merge')
 const Router = require('koa-router')
 
 const dependencies = require('../package').dependencies
@@ -18,13 +18,15 @@ const extendConfig = (config, name) => {
     if (typeof currentConfig === 'function') {
       currentConfig = currentConfig(config)
     }
-    _.merge(config, currentConfig)
+    merge(config, currentConfig)
   } catch (ex) {
+    console.warn(ex.message)
   }
 }
 
 module.exports = (app) => {
   let config = {
+    env: app.env,
     extendConfigs: ['[env]']
   }
   extendConfig(config, 'default')

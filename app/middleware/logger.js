@@ -15,13 +15,13 @@ module.exports = function (options, app) {
       new logger.transports.Console({
         level: isDebug ? 'debug' : 'info',
         colorize: true,
-        handleExceptions: true
+        handleExceptions: true,
+        humanReadableUnhandledException: true
       }),
       new logger.transports.File({
         level: 'info',
         maxsize: options.maxSize,
         handleExceptions: true,
-        humanReadableUnhandledException: true,
         filename: path.join(options.dir, 'app.log')
       })
     ],
