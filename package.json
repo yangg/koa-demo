@@ -20,6 +20,7 @@
     "koa-redis": "^3.0.0",
     "koa-router": "^7.1.1",
     "koa-session": "^5.0.0",
+    "lodash": "^4.17.4",
     "monk": "^4.0.0",
     "nunjucks-date": "^1.2.0",
     "winston": "^2.3.1"

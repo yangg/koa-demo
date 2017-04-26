@@ -1,16 +1,37 @@
 
 const path = require('path')
 const fs = require('fs')
+const _ = require('lodash')
 const Router = require('koa-router')
 
 const dependencies = require('../package').dependencies
+const configDir = path.join(__dirname, '../config')
 const middlewareDir = path.join(__dirname, 'middleware')
 const pluginDir = path.join(__dirname, 'plugins')
 const routesDir = path.join(__dirname, 'routes')
 const controllersDir = path.join(__dirname, 'controllers')
 
+const extendConfig = (config, name) => {
+  const configName = path.join(configDir, name)
+  try {
+    let currentConfig = require(configName)
+    if (typeof currentConfig === 'function') {
+      currentConfig = currentConfig(config)
+    }
+    _.merge(config, currentConfig)
+  } catch (ex) {
+  }
+}
+
 module.exports = (app) => {
-  const config = require('../config')
+  let config = {
+    extendConfigs: ['[env]']
+  }
+  extendConfig(config, 'default')
+  config.extendConfigs.forEach(c =>
+    extendConfig(config, c.replace('[env]', app.env))
+  )
+
   app.config = config
   app.isDev = app.env === 'development'
   app.isProd = app.env === 'production'
