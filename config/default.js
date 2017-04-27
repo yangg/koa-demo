@@ -1,18 +1,31 @@
 
-// const path = require('path')
+const path = require('path')
+
+const nunjucksDate = require('nunjucks-date')
+const viewNunjucks = {
+  ext: 'html',
+  path: path.join(__dirname, '../views/'),
+  nunjucksConfig: { },
+  configureEnvironment: (env) => {
+        // date filter
+    nunjucksDate.setDefaultFormat('YYYY-MM-DD H:mm')
+    nunjucksDate.install(env)
+  }
+}
+
 const appPackage = require('../package')
 module.exports = {
   name: appPackage.name,
   keys: [ 'secret key' ],
   middleware: [
-    ['ignore', /\.map$/],
+    [ 'ignore', /\.map$/ ],
     'koa-onerror',
     'logger',
     // 'koa-session',
     'session',
     'koa-flash',
-    'render',
-    ['koa-get-body', { limits: { fileSize: 1024 * 1024 } }]
+    [ 'koa-nunjucks-2', viewNunjucks ],
+    [ 'koa-get-body', { limits: { fileSize: 1024 * 1024 } } ]
   ],
   plugins: [
     [ 'fundebug', {

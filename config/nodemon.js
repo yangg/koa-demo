@@ -19,13 +19,13 @@ browserSync.init({
 
   nodemon.on('start', function () {
     // browserSync.reload()
-  }).on('stdout', function (msg) {
-    const stdout = msg.toString()
+  }).on('stdout', function (stdout) {
     process.stdout.write(stdout)
-    if (stdout.indexOf('listen on') > -1) {
+    if (stdout.toString().indexOf('listen on') > -1) {
       browserSync.reload()
     }
-  }).on('quit', function () {
+  }).on('stderr', (err) => process.stderr.write(err))
+  .on('quit', function () {
     process.exit()
   })
 })

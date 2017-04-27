@@ -32,6 +32,7 @@
     ]
   },
   "devDependencies": {
-    "koa-browser-sync": "^1.0.1"
+    "koa-browser-sync": "^1.0.1",
+    "nodemon": "^1.11.0"
   }
 }
