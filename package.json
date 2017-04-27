@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e 'js html' index.js"
+    "start": "node index.js",
+    "dev": "node config/nodemon.js"
   },
   "keywords": [],
   "author": "",
@@ -29,5 +30,8 @@
     "globals": [
       "logger"
     ]
+  },
+  "devDependencies": {
+    "koa-browser-sync": "^1.0.1"
   }
 }

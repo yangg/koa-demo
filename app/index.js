@@ -4,7 +4,8 @@ const fs = require('fs')
 const merge = require('lodash.merge')
 const Router = require('koa-router')
 
-const dependencies = require('../package').dependencies
+const appPackage = require('../package')
+const dependencies = merge(appPackage.dependencies, appPackage.devDependencies)
 const configDir = path.join(__dirname, '../config')
 const middlewareDir = path.join(__dirname, 'middleware')
 const pluginDir = path.join(__dirname, 'plugins')
