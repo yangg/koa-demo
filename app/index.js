@@ -82,7 +82,7 @@ module.exports = (app) => {
       require(path.join(routesDir, file))(subRouter, controller)
       router.use(subRouter.routes(), subRouter.allowedMethods())
     })
-    app.use(router.routes())
+    app.use(router.routes(), router.allowedMethods())
   }
 
   initPlugins()

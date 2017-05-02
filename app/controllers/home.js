@@ -30,3 +30,15 @@ exports.getLog = async function (ctx) {
     })
   })
 }
+
+const fs = require('fs')
+const path = require('path')
+exports.upload = async function (ctx) {
+  const body = await ctx.request.getBody()
+  if (body.files) {
+    const file = body.files
+    const newFile = path.basename(file.tmpPath)
+    fs.renameSync(file.tmpPath, `${__dirname}/../../upload/${newFile}`)
+    ctx.body = ctx.origin + '/upload/' + newFile
+  }
+}
